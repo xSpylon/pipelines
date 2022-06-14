@@ -11,7 +11,7 @@ A GitHub Secret that will store the SSH key used to connect to the server.
 
 When using this in an organization that runs multiple projects on the same server, you only need to create this secret once as a GitHub organization secret. It can then be used across all repository's with access, and it will be able to deploy all those repository's to different locations on that same server.
 
-Steps: 
+**Steps:**
 1. Generate an SSH private key that will give you access to your server.
 2. Create a new GitHub organization/repository secret with a recognizable name such as `DEPLOYMENT_SSH_PRIVATE_KEY`.
 3. Paste your SSH private key as the value of the GitHub Secret.
@@ -21,7 +21,7 @@ Steps:
 
 The action that runs every time you push to a given branch. This will deploy the repository.
 
-Steps: 
+**Steps:**
 1. Create a new workflow under the path `.github/workflows/YOUR_WORKFLOW_NAME`.
 2. Paste the following content in your workflow file.
 ```yaml
@@ -67,11 +67,11 @@ jobs:
 ```
 
 
-**Pipeline config file** 
+### Pipeline config file
 
 A configuration file that indicates what should be deployed, and where it should be deployed.
 
-Steps:
+**Steps:**
 1. Create a config file with the name `pipeline.json` at the root of your project.
 2. Paste the following file content.
 
