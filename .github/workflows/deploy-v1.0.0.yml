@@ -1,0 +1,274 @@
+# Workflow name
+name: Deploy v1.0.0
+
+# Events that trigger the workflow
+on:
+  workflow_call: # Called externally
+    secrets:
+      ssh_private_key:
+        required: true
+
+# Actions
+jobs:
+
+  # Get the data
+  data:
+    name: Get data
+    runs-on: ubuntu-latest
+    steps:
+
+    # Check out the repository
+    - name: Check out repository code
+      uses: actions/checkout@v2
+
+    # Get the repository data
+    - name: Extract branch name
+      shell: bash
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+      id: extract_branch
+
+    - name: Get repository branch
+      id: get_current_branch
+      run: "echo ::set-output name=prop::${{ steps.extract_branch.outputs.branch }}"
+
+    # Get pipeline data
+    - name: Get staging branch from pipeline config # Get staging branch
+      id: get_staging_branch
+      uses: notiz-dev/github-action-json-property@release
+      with: 
+        path: 'pipeline.json'
+        prop_path: 'staging.branch'
+
+    - name: Get production branch from pipeline config # Get production branch
+      id: get_production_branch
+      uses: notiz-dev/github-action-json-property@release
+      with: 
+        path: 'pipeline.json'
+        prop_path: 'production.branch'
+
+    - name: Get staging URL from pipeline config # Get staging URL
+      id: get_staging_url
+      uses: notiz-dev/github-action-json-property@release
+      with: 
+        path: 'pipeline.json'
+        prop_path: 'staging.url'
+
+    - name: Get production URL from pipeline config # Get production URL
+      id: get_production_url
+      uses: notiz-dev/github-action-json-property@release
+      with: 
+        path: 'pipeline.json'
+        prop_path: 'production.url'
+
+    - name: Get staging host from pipeline config # Get staging host
+      id: get_staging_host
+      uses: notiz-dev/github-action-json-property@release
+      with: 
+        path: 'pipeline.json'
+        prop_path: 'staging.host'
+
+    - name: Get production host from pipeline config # Get production host
+      id: get_production_host
+      uses: notiz-dev/github-action-json-property@release
+      with: 
+        path: 'pipeline.json'
+        prop_path: 'production.host'
+
+    - name: Get staging port from pipeline config # Get staging port
+      id: get_staging_port
+      uses: notiz-dev/github-action-json-property@release
+      with: 
+        path: 'pipeline.json'
+        prop_path: 'staging.port'
+
+    - name: Get production port from pipeline config # Get production port
+      id: get_production_port
+      uses: notiz-dev/github-action-json-property@release
+      with: 
+        path: 'pipeline.json'
+        prop_path: 'production.port'
+
+    - name: Get staging username from pipeline config # Get staging username
+      id: get_staging_username
+      uses: notiz-dev/github-action-json-property@release
+      with: 
+        path: 'pipeline.json'
+        prop_path: 'staging.username'
+
+    - name: Get production username from pipeline config # Get production username
+      id: get_production_username
+      uses: notiz-dev/github-action-json-property@release
+      with: 
+        path: 'pipeline.json'
+        prop_path: 'production.username'
+
+    - name: Get staging path from pipeline config # Get staging path
+      id: get_staging_path
+      uses: notiz-dev/github-action-json-property@release
+      with: 
+        path: 'pipeline.json'
+        prop_path: 'staging.path'
+
+    - name: Get production path from pipeline config # Get production path
+      id: get_production_path
+      uses: notiz-dev/github-action-json-property@release
+      with: 
+        path: 'pipeline.json'
+        prop_path: 'production.path'
+
+    - name: Get local path from pipeline config # Get local path
+      id: get_local_path
+      uses: notiz-dev/github-action-json-property@release
+      with: 
+        path: 'pipeline.json'
+        prop_path: 'local.path'
+
+    # Set the repository data
+    - name: Set current branch
+      id: set_current_branch
+      run: "echo ::set-output name=value::${{ steps.get_current_branch.outputs.prop }}"
+
+    # Set the pipeline data
+    - name: Set staging branch # Set staging branch
+      id: set_staging_branch
+      run: "echo ::set-output name=value::${{ steps.get_staging_branch.outputs.prop }}"
+
+    - name: Set production branch # Set production branch
+      id: set_production_branch
+      run: "echo ::set-output name=value::${{ steps.get_production_branch.outputs.prop }}"
+
+    - name: Set staging URL # Set staging URL
+      id: set_staging_url
+      run: "echo ::set-output name=value::${{ steps.get_staging_url.outputs.prop }}"
+
+    - name: Set production URL # Set production URL
+      id: set_production_url
+      run: "echo ::set-output name=value::${{ steps.get_production_url.outputs.prop }}"
+
+    - name: Set staging host # Set staging host
+      id: set_staging_host
+      run: "echo ::set-output name=value::${{ steps.get_staging_host.outputs.prop }}"
+
+    - name: Set production host # Set production host
+      id: set_production_host
+      run: "echo ::set-output name=value::${{ steps.get_production_host.outputs.prop }}"
+
+    - name: Set staging port # Set staging port
+      id: set_staging_port
+      run: "echo ::set-output name=value::${{ steps.get_staging_port.outputs.prop }}"
+
+    - name: Set production port # Set production port
+      id: set_production_port
+      run: "echo ::set-output name=value::${{ steps.get_production_port.outputs.prop }}"
+
+    - name: Set staging username # Set staging username
+      id: set_staging_username
+      run: "echo ::set-output name=value::${{ steps.get_staging_username.outputs.prop }}"
+
+    - name: Set production username # Set production username
+      id: set_production_username
+      run: "echo ::set-output name=value::${{ steps.get_production_username.outputs.prop }}"
+
+    - name: Set staging path # Set staging path
+      id: set_staging_path
+      run: "echo ::set-output name=value::${{ steps.get_staging_path.outputs.prop }}"
+
+    - name: Set production path # Set production path
+      id: set_production_path
+      run: "echo ::set-output name=value::${{ steps.get_production_path.outputs.prop }}"
+
+    - name: Set local path # Set local path
+      id: set_local_path
+      run: "echo ::set-output name=value::${{ steps.get_local_path.outputs.prop }}"
+
+    # Output the data
+    outputs:
+      current_branch: ${{ steps.set_current_branch.outputs.value }}
+      staging_branch: ${{ steps.set_staging_branch.outputs.value }}
+      production_branch: ${{ steps.set_production_branch.outputs.value }}
+      staging_url: ${{ steps.set_staging_url.outputs.value }}
+      production_url: ${{ steps.set_production_url.outputs.value }}
+      staging_host: ${{ steps.set_staging_host.outputs.value }}
+      production_host: ${{ steps.set_production_host.outputs.value }}
+      staging_port: ${{ steps.set_staging_port.outputs.value }}
+      production_port: ${{ steps.set_production_port.outputs.value }}
+      staging_username: ${{ steps.set_staging_username.outputs.value }}
+      production_username: ${{ steps.set_production_username.outputs.value }}
+      staging_path: ${{ steps.set_staging_path.outputs.value }}
+      production_path: ${{ steps.set_production_path.outputs.value }}
+      local_path: ${{ steps.set_local_path.outputs.value }}
+
+  # Build
+  build: 
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+
+      # Check out the repository
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      # Setup Node
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+
+      # Install node dependencies
+      - run: npm install
+
+      # Build the project
+      - run: npm run build --if-present
+
+  # Test
+  test:
+    name: Test
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+
+      # Check out the repository
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      # Run tests
+      - run: npm test --if-present
+
+  # Deploy
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: [ data, test ]
+    steps:
+
+      # Check out the repository
+      - name: Checkout GitHub repository
+        uses: actions/checkout@v2
+
+      # If the event is triggered on the staging branch, deploy to the staging server
+      - if: ${{ needs.data.outputs.current_branch == needs.data.outputs.staging_branch }}
+        name: Deploy to staging server
+        id: deploy_staging
+        uses: easingthemes/ssh-deploy@main
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.ssh_private_key }}
+          ARGS: "-rltgoDzvO"
+          SOURCE: ${{ needs.data.outputs.local_path }}
+          TARGET: ${{ needs.data.outputs.staging_path }}
+          REMOTE_HOST: ${{ needs.data.outputs.staging_host }}
+          REMOTE_PORT: ${{ needs.data.outputs.staging_port }}
+          REMOTE_USER: ${{ needs.data.outputs.staging_username }}
+          EXCLUDE: "/dist/, /node_modules/"
+
+      # If the event is triggered on the production branch, deploy to the production server
+      - if: ${{ needs.data.outputs.current_branch == needs.data.outputs.production_branch }}
+        name: Deploy to production server
+        id: deploy_production
+        uses: easingthemes/ssh-deploy@main
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.ssh_private_key }}
+          ARGS: "-rltgoDzvO"
+          SOURCE: ${{ needs.data.outputs.local_path }}
+          TARGET: ${{ needs.data.outputs.production_path }}
+          REMOTE_HOST: ${{ needs.data.outputs.production_host }}
+          REMOTE_PORT: ${{ needs.data.outputs.production_port }}
+          REMOTE_USER: ${{ needs.data.outputs.production_username }}
+          EXCLUDE: "/dist/, /node_modules/"
