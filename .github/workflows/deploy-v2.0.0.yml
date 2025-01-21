@@ -1,4 +1,4 @@
-name: Deploy v1.0.0
+name: Deploy v2.0.0
 
 on:
   workflow_call:
