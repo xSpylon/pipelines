@@ -2,7 +2,7 @@
 
 A repository that contains multiple reusable workflows that can be used in GitHub Actions.
 
-## Deploy v1.1.0
+## Deploy v2.0.0
 Automatically deploys a project to a staging or a production environment based on a provided config file.
 
 ### GitHub Secret
@@ -42,7 +42,7 @@ jobs:
 
   # Deploy
   deploy:
-    uses: xSpylon/pipelines/.github/workflows/deploy-v1.0.0.yml@main
+    uses: xSpylon/pipelines/.github/workflows/deploy-v2.0.0.yml@main
     secrets:
       ssh_private_key: ${{ secrets.DEPLOYMENT_SSH_PRIVATE_KEY }}
 ```
@@ -61,7 +61,7 @@ on:
 
 jobs:
   deploy:
-    uses: xSpylon/pipelines/.github/workflows/deploy-v1.0.0.yml@main
+    uses: xSpylon/pipelines/.github/workflows/deploy-v2.0.0.yml@main
     secrets:
       ssh_private_key: ${{ secrets.DEPLOYMENT_SSH_PRIVATE_KEY }}
 ```
