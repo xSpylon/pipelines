@@ -83,7 +83,8 @@ A configuration file that indicates what should be deployed, and where it should
     "host": "PRODUCTION_SSH_IP_ADDRESS",
     "port": "PRODUCTION_SSH_PORT",
     "username": "PRODUCTION_SSH_USERNAME",
-    "path": "REMOTE_PATH_TO_DEPLOY_TO"
+    "path": "REMOTE_PATH_TO_DEPLOY_TO",
+    "node_version": "NODE_VERSION",
   },
   "staging": {
     "branch": "STAGING_BRANCH_NAME",
@@ -91,7 +92,8 @@ A configuration file that indicates what should be deployed, and where it should
     "host": "STAGING_SSH_IP_ADDRESS",
     "port": "STAGING_SSH_PORT",
     "username": "STAGING_SSH_USERNAME",
-    "path": "REMOTE_PATH_TO_DEPLOY_TO"
+    "path": "REMOTE_PATH_TO_DEPLOY_TO",
+    "node_version": "NODE_VERSION",
   },
   "local": {
     "path": "PATH_TO_DIST"
@@ -108,7 +110,8 @@ A configuration file that indicates what should be deployed, and where it should
     "host": "12.34.567.890",
     "port": "12345",
     "username": "admin",
-    "path": "./"
+    "path": "./",
+    "node_version": "20"
   },
   "staging": {
     "branch": "dev",
@@ -116,7 +119,8 @@ A configuration file that indicates what should be deployed, and where it should
     "host": "12.34.567.890",
     "port": "67890",
     "username": "admin",
-    "path": "./"
+    "path": "./",
+    "node_version": "20"
   },
   "local": {
     "path": "dist/"

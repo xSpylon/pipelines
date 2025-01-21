@@ -1,0 +1,115 @@
+name: Deploy v1.0.0
+
+on:
+  workflow_call:
+    secrets:
+      ssh_private_key:
+        required: true
+
+jobs:
+
+  data:
+    name: Get Data
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Check out repository code
+      uses: actions/checkout@v2
+
+    - name: Load pipeline configuration
+      id: load_pipeline
+      run: echo "config=$(cat pipeline.json | jq -c .)" >> $GITHUB_ENV
+
+    - name: Extract properties
+      run: |
+        echo "current_branch=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
+        echo "staging_branch=$(echo $config | jq -r '.staging.branch')" >> $GITHUB_ENV
+        echo "production_branch=$(echo $config | jq -r '.production.branch')" >> $GITHUB_ENV
+        echo "staging_url=$(echo $config | jq -r '.staging.url')" >> $GITHUB_ENV
+        echo "production_url=$(echo $config | jq -r '.production.url')" >> $GITHUB_ENV
+        echo "staging_host=$(echo $config | jq -r '.staging.host')" >> $GITHUB_ENV
+        echo "production_host=$(echo $config | jq -r '.production.host')" >> $GITHUB_ENV
+        echo "staging_port=$(echo $config | jq -r '.staging.port')" >> $GITHUB_ENV
+        echo "production_port=$(echo $config | jq -r '.production.port')" >> $GITHUB_ENV
+        echo "staging_username=$(echo $config | jq -r '.staging.username')" >> $GITHUB_ENV
+        echo "production_username=$(echo $config | jq -r '.production.username')" >> $GITHUB_ENV
+        echo "staging_path=$(echo $config | jq -r '.staging.path')" >> $GITHUB_ENV
+        echo "production_path=$(echo $config | jq -r '.production.path')" >> $GITHUB_ENV
+        echo "local_path=$(echo $config | jq -r '.local.path')" >> $GITHUB_ENV
+        echo "production_node_version=$(echo $config | jq -r '.production.node_version')" >> $GITHUB_ENV
+        echo "staging_node_version=$(echo $config | jq -r '.staging.node_version')" >> $GITHUB_ENV
+
+    outputs:
+      current_branch: ${{ env.current_branch }}
+      staging_branch: ${{ env.staging_branch }}
+      production_branch: ${{ env.production_branch }}
+      staging_url: ${{ env.staging_url }}
+      production_url: ${{ env.production_url }}
+      staging_host: ${{ env.staging_host }}
+      production_host: ${{ env.production_host }}
+      staging_port: ${{ env.staging_port }}
+      production_port: ${{ env.production_port }}
+      staging_username: ${{ env.staging_username }}
+      production_username: ${{ env.production_username }}
+      staging_path: ${{ env.staging_path }}
+      production_path: ${{ env.production_path }}
+      local_path: ${{ env.local_path }}
+      production_node_version: ${{ env.production_node_version }}
+      staging_node_version: ${{ env.staging_node_version }}
+
+  build_and_test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Check out repository code
+      uses: actions/checkout@v2
+
+    - name: Use Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ env.local_path }}
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build project
+      run: npm run build --if-present
+
+    - name: Run tests
+      run: npm test --if-present
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: [data, build_and_test]
+    steps:
+
+    - name: Check out repository code
+      uses: actions/checkout@v2
+
+    - name: Deploy to staging server
+      if: ${{ env.current_branch == env.staging_branch }}
+      uses: easingthemes/ssh-deploy@main
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.ssh_private_key }}
+        ARGS: "-rltgoDzvO"
+        SOURCE: ${{ env.local_path }}
+        TARGET: ${{ env.staging_path }}
+        REMOTE_HOST: ${{ env.staging_host }}
+        REMOTE_PORT: ${{ env.staging_port }}
+        REMOTE_USER: ${{ env.staging_username }}
+        EXCLUDE: "/dist/, /node_modules/"
+
+    - name: Deploy to production server
+      if: ${{ env.current_branch == env.production_branch }}
+      uses: easingthemes/ssh-deploy@main
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.ssh_private_key }}
+        ARGS: "-rltgoDzvO"
+        SOURCE: ${{ env.local_path }}
+        TARGET: ${{ env.production_path }}
+        REMOTE_HOST: ${{ env.production_host }}
+        REMOTE_PORT: ${{ env.production_port }}
+        REMOTE_USER: ${{ env.production_username }}
+        EXCLUDE: "/dist/, /node_modules/"
