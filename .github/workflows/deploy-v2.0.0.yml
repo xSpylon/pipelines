@@ -88,48 +88,47 @@ jobs:
     - name: Check out repository code
       uses: actions/checkout@v2
     
-    # Log the environment variables for testing purposes
     - name: Log environment variables
       run: |
-        echo "current_branch: ${{ env.current_branch }}"
-        echo "staging_branch: ${{ env.staging_branch }}"
-        echo "production_branch: ${{ env.production_branch }}"
-        echo "staging_url: ${{ env.staging_url }}"
-        echo "production_url: ${{ env.production_url }}"
-        echo "staging_host: ${{ env.staging_host }}"
-        echo "production_host: ${{ env.production_host }}"
-        echo "staging_port: ${{ env.staging_port }}"
-        echo "production_port: ${{ env.production_port }}"
-        echo "staging_username: ${{ env.staging_username }}"
-        echo "production_username: ${{ env.production_username }}"
-        echo "staging_path: ${{ env.staging_path }}"
-        echo "production_path: ${{ env.production_path }}"
-        echo "local_path: ${{ env.local_path }}"
-        echo "production_node_version: ${{ env.production_node_version }}"
-        echo "staging_node_version: ${{ env.staging_node_version }}"
+        echo "current_branch: ${{ needs.data.outputs.current_branch }}"
+        echo "staging_branch: ${{ needs.data.outputs.staging_branch }}"
+        echo "production_branch: ${{ needs.data.outputs.production_branch }}"
+        echo "staging_url: ${{ needs.data.outputs.staging_url }}"
+        echo "production_url: ${{ needs.data.outputs.production_url }}"
+        echo "staging_host: ${{ needs.data.outputs.staging_host }}"
+        echo "production_host: ${{ needs.data.outputs.production_host }}"
+        echo "staging_port: ${{ needs.data.outputs.staging_port }}"
+        echo "production_port: ${{ needs.data.outputs.production_port }}"
+        echo "staging_username: ${{ needs.data.outputs.staging_username }}"
+        echo "production_username: ${{ needs.data.outputs.production_username }}"
+        echo "staging_path: ${{ needs.data.outputs.staging_path }}"
+        echo "production_path: ${{ needs.data.outputs.production_path }}"
+        echo "local_path: ${{ needs.data.outputs.local_path }}"
+        echo "production_node_version: ${{ needs.data.outputs.production_node_version }}"
+        echo "staging_node_version: ${{ needs.data.outputs.staging_node_version }}"
 
     - name: Deploy to staging server
-      if: ${{ env.current_branch == env.staging_branch }}
+      if: ${{ needs.data.outputs.current_branch == needs.data.outputs.staging_branch }}
       uses: easingthemes/ssh-deploy@main
       env:
         SSH_PRIVATE_KEY: ${{ secrets.ssh_private_key }}
         ARGS: "-rltgoDzvO"
-        SOURCE: ${{ env.local_path }}
-        TARGET: ${{ env.staging_path }}
-        REMOTE_HOST: ${{ env.staging_host }}
-        REMOTE_PORT: ${{ env.staging_port }}
-        REMOTE_USER: ${{ env.staging_username }}
+        SOURCE: ${{ needs.data.outputs.local_path }}
+        TARGET: ${{ needs.data.outputs.staging_path }}
+        REMOTE_HOST: ${{ needs.data.outputs.staging_host }}
+        REMOTE_PORT: ${{ needs.data.outputs.staging_port }}
+        REMOTE_USER: ${{ needs.data.outputs.staging_username }}
         EXCLUDE: "/dist/, /node_modules/"
 
     - name: Deploy to production server
-      if: ${{ env.current_branch == env.production_branch }}
+      if: ${{ needs.data.outputs.current_branch == needs.data.outputs.production_branch }}
       uses: easingthemes/ssh-deploy@main
       env:
         SSH_PRIVATE_KEY: ${{ secrets.ssh_private_key }}
         ARGS: "-rltgoDzvO"
-        SOURCE: ${{ env.local_path }}
-        TARGET: ${{ env.production_path }}
-        REMOTE_HOST: ${{ env.production_host }}
-        REMOTE_PORT: ${{ env.production_port }}
-        REMOTE_USER: ${{ env.production_username }}
+        SOURCE: ${{ needs.data.outputs.local_path }}
+        TARGET: ${{ needs.data.outputs.production_path }}
+        REMOTE_HOST: ${{ needs.data.outputs.production_host }}
+        REMOTE_PORT: ${{ needs.data.outputs.production_port }}
+        REMOTE_USER: ${{ needs.data.outputs.production_username }}
         EXCLUDE: "/dist/, /node_modules/"
