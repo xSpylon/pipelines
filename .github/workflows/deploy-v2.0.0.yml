@@ -87,6 +87,26 @@ jobs:
 
     - name: Check out repository code
       uses: actions/checkout@v2
+    
+    # Log the environment variables for testing purposes
+    - name: Log environment variables
+      run: |
+        echo "current_branch: ${{ env.current_branch }}"
+        echo "staging_branch: ${{ env.staging_branch }}"
+        echo "production_branch: ${{ env.production_branch }}"
+        echo "staging_url: ${{ env.staging_url }}"
+        echo "production_url: ${{ env.production_url }}"
+        echo "staging_host: ${{ env.staging_host }}"
+        echo "production_host: ${{ env.production_host }}"
+        echo "staging_port: ${{ env.staging_port }}"
+        echo "production_port: ${{ env.production_port }}"
+        echo "staging_username: ${{ env.staging_username }}"
+        echo "production_username: ${{ env.production_username }}"
+        echo "staging_path: ${{ env.staging_path }}"
+        echo "production_path: ${{ env.production_path }}"
+        echo "local_path: ${{ env.local_path }}"
+        echo "production_node_version: ${{ env.production_node_version }}"
+        echo "staging_node_version: ${{ env.staging_node_version }}"
 
     - name: Deploy to staging server
       if: ${{ env.current_branch == env.staging_branch }}
