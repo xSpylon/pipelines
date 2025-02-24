@@ -35,7 +35,7 @@ jobs:
         echo "production_username=$(echo $config | jq -r '.production.username')" >> $GITHUB_ENV
         echo "staging_path=$(echo $config | jq -r '.staging.path')" >> $GITHUB_ENV
         echo "production_path=$(echo $config | jq -r '.production.path')" >> $GITHUB_ENV
-        echo "local_path=$(echo $config | jq -r '.local.path')" >> $GITHUB_ENV
+        echo "source_path=$(echo $config | jq -r '.source.path')" >> $GITHUB_ENV
         echo "production_node_version=$(echo $config | jq -r '.production.node_version')" >> $GITHUB_ENV
         echo "staging_node_version=$(echo $config | jq -r '.staging.node_version')" >> $GITHUB_ENV
 
@@ -53,7 +53,7 @@ jobs:
       production_username: ${{ env.production_username }}
       staging_path: ${{ env.staging_path }}
       production_path: ${{ env.production_path }}
-      local_path: ${{ env.local_path }}
+      source_path: ${{ env.source_path }}
       production_node_version: ${{ env.production_node_version }}
       staging_node_version: ${{ env.staging_node_version }}
 
@@ -69,7 +69,7 @@ jobs:
     - name: Use Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: ${{ needs.data.local_path }}
+        node-version: ${{ needs.data.source_path }}
 
     - name: Install dependencies
       run: npm install
@@ -95,7 +95,7 @@ jobs:
       env:
         SSH_PRIVATE_KEY: ${{ secrets.ssh_private_key }}
         ARGS: "-rltgoDzvO"
-        SOURCE: ${{ needs.data.outputs.local_path }}
+        SOURCE: ${{ needs.data.outputs.source_path }}
         TARGET: ${{ needs.data.outputs.staging_path }}
         REMOTE_HOST: ${{ needs.data.outputs.staging_host }}
         REMOTE_PORT: ${{ needs.data.outputs.staging_port }}
@@ -108,7 +108,7 @@ jobs:
       env:
         SSH_PRIVATE_KEY: ${{ secrets.ssh_private_key }}
         ARGS: "-rltgoDzvO"
-        SOURCE: ${{ needs.data.outputs.local_path }}
+        SOURCE: ${{ needs.data.outputs.source_path }}
         TARGET: ${{ needs.data.outputs.production_path }}
         REMOTE_HOST: ${{ needs.data.outputs.production_host }}
         REMOTE_PORT: ${{ needs.data.outputs.production_port }}
