@@ -43,8 +43,6 @@ jobs:
       current_branch: ${{ env.current_branch }}
       staging_branch: ${{ env.staging_branch }}
       production_branch: ${{ env.production_branch }}
-      staging_url: ${{ env.staging_url }}
-      production_url: ${{ env.production_url }}
       staging_host: ${{ env.staging_host }}
       production_host: ${{ env.production_host }}
       staging_port: ${{ env.staging_port }}
