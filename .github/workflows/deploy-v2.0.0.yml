@@ -116,6 +116,13 @@ jobs:
     - name: Run tests
       run: npm test --if-present
 
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-files
+        path: dist/
+        retention-days: 1
+
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
@@ -124,6 +131,12 @@ jobs:
 
     - name: Check out repository code
       uses: actions/checkout@v2
+
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: build-files
+        path: dist
 
     - name: Deploy to staging server
       if: ${{ needs.data.outputs.current_branch == needs.data.outputs.staging_branch }}
@@ -136,7 +149,7 @@ jobs:
         REMOTE_HOST: ${{ needs.data.outputs.staging_host }}
         REMOTE_PORT: ${{ needs.data.outputs.staging_port }}
         REMOTE_USER: ${{ needs.data.outputs.staging_username }}
-        EXCLUDE: "/dist/, /node_modules/"
+        EXCLUDE: "/node_modules/"
 
     - name: Deploy to production server
       if: ${{ needs.data.outputs.current_branch == needs.data.outputs.production_branch }}
@@ -149,4 +162,4 @@ jobs:
         REMOTE_HOST: ${{ needs.data.outputs.production_host }}
         REMOTE_PORT: ${{ needs.data.outputs.production_port }}
         REMOTE_USER: ${{ needs.data.outputs.production_username }}
-        EXCLUDE: "/dist/, /node_modules/"
+        EXCLUDE: "/node_modules/"
